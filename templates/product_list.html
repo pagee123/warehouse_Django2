@@ -203,6 +203,7 @@
                             <th>序號</th>
                             <th>條碼</th>
                             <th>產品名稱</th>
+                            <th>圖片</th>
                             <th>建立日期</th>
                             <th>廠商</th>
                             <th>剩餘數量</th>
@@ -215,6 +216,13 @@
                                 <td>{{ product.serial_number }}</td>
                                 <td>{{ product.barcode }}</td>
                                 <td>{{ product.product_name }}</td>
+                                <td>
+                                    {% if product.images.all %}
+                                        <img src="{{ product.images.first.image.url }}" alt="{{ product.product_name }}" width="50px" height="50px">  <!-- 顯示第一張圖片 -->
+                                    {% else %}
+                                        <p>無圖片</p>
+                                    {% endif %}
+                                </td>
                                 <td>{{ product.arrival_date }}</td>
                                 <td>{{ product.supplier}}</td>
                                 <td>{{ product.quantity }}</td>

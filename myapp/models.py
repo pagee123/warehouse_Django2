@@ -45,7 +45,7 @@ class Product(models.Model):
         
 class ProductImage(models.Model):
     product = models.ForeignKey('Product', related_name='images', on_delete=models.CASCADE)  # 與 Product 關聯
-    image = models.ImageField(upload_to='product_images/')  # 圖片上傳路徑
+    image = models.ImageField(upload_to='images/')  # 圖片上傳路徑
 
     def __str__(self):
         return f"Image for {self.product.product_name}"

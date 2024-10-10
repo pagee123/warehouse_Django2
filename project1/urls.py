@@ -20,6 +20,10 @@ from myapp.views import *
 from myapp import views
 from django.contrib.auth import views as auth_views
 from myapp.views import *
+from django.conf.urls.static import static
+from django.conf import settings
+from django.views.static import serve
+from .settings import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,6 +43,9 @@ urlpatterns = [
     path('api/users/<int:pk>/', UserDetailAPIView.as_view(), name='user_detail_api'),  # 單一使用者
     path('api/login/', login_user, name='login_user'),
     path('api/user/profile/', get_user_profile, name='user-profile'),
+
+
     
-    re_path(r'.*/',views.error_page),
+    re_path(r'media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    re_path(r'.*',views.error_page),
 ]

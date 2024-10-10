@@ -63,7 +63,13 @@
                     {% for product_type in product_types %}
                         <option value="{{ product_type.id }}">{{ product_type.name }}</option>
                     {% endfor %}
+                    <option value="other">其他</option>
                 </select>
+            </div>
+            <!-- 這是隱藏的輸入框，用來輸入自定義的類型 -->
+            <div class="form-group" id="other_type_group" style="display:none;">
+                <label for="id_other_product_type">其他:</label>
+                <input type="text" name="other_product_type" id="id_other_product_type">
             </div>
             <div class="form-group">
                 <label for="id_arrival_date">建立日期:</label>
@@ -80,7 +86,13 @@
                     {% for supplier in suppliers %}
                         <option value="{{ supplier.id }}">{{ supplier.name }}</option>
                     {% endfor %}
+                    <option value="other">其他</option>
                 </select>
+            </div>
+            <!-- 這是隱藏的輸入框，用來輸入自定義的類型 -->
+            <div class="form-group" id="other_supplier" style="display:none;">
+                <label for="id_other_supplier">其他:</label>
+                <input type="text" name="other_supplier" id="id_other_supplier">
             </div>
             <div class="form-group">
                 <label for="id_description">敘述:</label>
@@ -94,6 +106,32 @@
             {% comment %} {{ form.as_p }} {% endcomment %}
         </form>
     </div>
+    <script>
+        function toggleOthertypeInput() {
+            var select = document.getElementById("id_product_type");
+            var otherTypeGroup = document.getElementById("other_type_group");
+    
+            if (select.value === "other") {
+                otherTypeGroup.style.display = "block";
+                document.getElementById("id_other_product_type").required = true;
+            } else {
+                otherTypeGroup.style.display = "none";
+                document.getElementById("id_other_product_type").required = false;
+            }
+        }
+        function toggleOtherInput() {
+            var select = document.getElementById("id_supplier");
+            var otherTypeGroup = document.getElementById("other_supplier");
+    
+            if (select.value === "other") {
+                otherTypeGroup.style.display = "block";
+                document.getElementById("id_other_supplier").required = true;
+            } else {
+                otherTypeGroup.style.display = "none";
+                document.getElementById("id_other_supplier").required = false;
+            }
+        }
+    </script>
 </body>
 
 </html>

@@ -16,6 +16,7 @@ from rest_framework.decorators import api_view,  permission_classes
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.decorators import login_required
+from django.forms.models import model_to_dict
 
 # Create your views here.
 
@@ -69,22 +70,21 @@ def product_list(request):
     page_number = request.GET.get('page')  # 獲取當前頁碼
     # 根據查詢篩選產品
     if query:
-        products = Product.objects.filter(product_name__icontains=query)
+        products = Product.objects.filter(product_name__icontains=query).prefetch_related('images')
     elif serial:
-        products = Product.objects.filter(serial_number__icontains=serial)
+        products = Product.objects.filter(serial_number__icontains=serial).prefetch_related('images')
     else:
-        products = Product.objects.all()
+        products = Product.objects.all().prefetch_related('images')
 
     # 如果有類型篩選條件，進一步篩選
     if product_type:
-        products = products.filter(product_type__id=product_type)
+        products = products.filter(product_type__id=product_type).prefetch_related('images')
 
     paginator = Paginator(products, 5)  # 每頁顯示 10 個產品
     page_obj = paginator.get_page(page_number)
 
     # 傳遞所有產品類型，用於頁面顯示類型篩選標籤
     all_types = ProductType.objects.all() 
-
     context = {
         'products': page_obj.object_list,
         'is_paginated': paginator.num_pages > 1,
@@ -92,7 +92,6 @@ def product_list(request):
         'all_types': all_types,  # 所有產品類型
         'selected_type': product_type  # 當前選中的類型
     }
-    print(products)
     return render(request, 'product_list.html', context)
 
 def update_quantity(request, product_id):
@@ -126,11 +125,35 @@ def error_page(request):
 
 def add_product(request):
     if request.method == 'POST':
-        form = ProductForm(request.POST)
+        # 檢查是否選擇了 "其他" 類型並提供了自定義類型
+        product_type_id = request.POST.get('product_type')
+        other_product_type = request.POST.get('other_product_type')
+        supplier_id = request.POST.get('supplier')
+        other_supplier = request.POST.get('other_supplier')
+
+        # 如果選擇了 "其他"，動態創建新類型
+        if product_type_id == 'other' and other_product_type:
+            # 創建新的 ProductType
+            new_product_type, created = ProductType.objects.get_or_create(name=other_product_type)
+            # 將新類型的 ID 替換到 POST 數據中
+            post_data = request.POST.copy()
+            post_data['product_type'] = new_product_type.id
+            request.POST = post_data
+
+        if supplier_id == 'other' and other_supplier:
+            # 創建新的 ProductType
+            new_supplier, created = Supplier.objects.get_or_create(name=other_supplier)
+            # 將新類型的 ID 替換到 POST 數據中
+            post_data = request.POST.copy()
+            post_data['supplier'] = new_supplier.id
+            request.POST = post_data
+
+
+         # 現在使用更新後的 POST 數據來創建表單
+        form = ProductForm(request.POST, request.FILES)
 
         if form.is_valid():
-            # 保存產品
-            product = form.save()
+            product = form.save()  # 直接保存表單
 
             # 創建操作記錄
             user = request.user
@@ -138,15 +161,12 @@ def add_product(request):
             ActivityLog.objects.create(user=user, action=action_description)
 
             return redirect('product_list')  # 新增成功後重定向到產品列表
-        else:
-            print(form.errors)  # 調試時輸出錯誤信息
     else:
         form = ProductForm()
 
     # 獲取現有的產品類型和供應商
     suppliers = Supplier.objects.all()
     product_types = ProductType.objects.all()
-    print(form)
 
     return render(request, 'add_product.html', {
         'form': form,
