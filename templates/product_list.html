@@ -145,9 +145,9 @@
     <!-- 導航欄 -->
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'home' %}">倉庫管理系統</a>
+            <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static 'images/Box_ico.ico' %}" width="25px" height="25px">&nbsp;倉庫管理系統</a>
 
-            <!-- Navbar Toggler -->
+            <!-- Navbar Toggler --> 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -247,7 +247,7 @@
                         <p><strong>條碼:</strong> {{ product.barcode }}</p>
                         <div class="product-image">
                             {% if product.images.all %}
-                            <img src="{{ product.images.first.image.url }}" alt="{{ product.product_name }}" width="100px" height="100px">
+                            <img src="{{ product.images.first.image.url }}" alt="{{ product.product_name }}" width="250px" height="250px">
                             {% else %}
                             <p>無圖片</p>
                             {% endif %}
