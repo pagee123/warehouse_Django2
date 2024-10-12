@@ -70,27 +70,35 @@ def product_list(request):
     page_number = request.GET.get('page')  # 獲取當前頁碼
     # 根據查詢篩選產品
     if query:
-        products = Product.objects.filter(product_name__icontains=query).prefetch_related('images')
+        products = Product.objects.filter(product_name__icontains=query).prefetch_related('images').order_by('serial_number')
     elif serial:
-        products = Product.objects.filter(serial_number__icontains=serial).prefetch_related('images')
+        products = Product.objects.filter(serial_number__exact=serial).prefetch_related('images').order_by('serial_number')
     else:
-        products = Product.objects.all().prefetch_related('images')
+        products = Product.objects.all().prefetch_related('images').order_by('serial_number')
 
     # 如果有類型篩選條件，進一步篩選
     if product_type:
-        products = products.filter(product_type__id=product_type).prefetch_related('images')
+        products = products.filter(product_type__id=product_type).prefetch_related('images').order_by('serial_number')
 
-    paginator = Paginator(products, 5)  # 每頁顯示 10 個產品
+    paginator = Paginator(products, 8)  # 每頁顯示 10 個產品
     page_obj = paginator.get_page(page_number)
 
     # 傳遞所有產品類型，用於頁面顯示類型篩選標籤
     all_types = ProductType.objects.all() 
+    
+    if product_type is None:
+        product_type = 0
+    product_type = int(product_type)
+    
+    print(type(product_type))
+    print(int(product_type))
+    
     context = {
         'products': page_obj.object_list,
         'is_paginated': paginator.num_pages > 1,
         'page_obj': page_obj,
         'all_types': all_types,  # 所有產品類型
-        'selected_type': product_type  # 當前選中的類型
+        'selected_type': int(product_type)  # 當前選中的類型
     }
     return render(request, 'product_list.html', context)
 

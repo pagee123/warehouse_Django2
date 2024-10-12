@@ -112,6 +112,33 @@
             margin-top: 20px;
             border-radius: 5px;
         }
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px; /* 卡片之間的間距 */
+        }
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            width: 300px; /* 卡片寬度 */
+            box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1); /* 卡片陰影 */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .product-card h4 {
+            margin: 0;
+        }
+        .product-image img {
+            max-width: 100%; /* 確保圖片不會超過卡片寬度 */
+            height: auto;
+        }
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
@@ -119,7 +146,13 @@
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container-fluid">
             <a class="navbar-brand" href="{% url 'home' %}">倉庫管理系統</a>
-            <div class="collapse navbar-collapse">
+
+            <!-- Navbar Toggler -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav" >
                 <ul class="navbar-nav ms-auto">
                     {% if user.is_authenticated %}
                         <li class="nav-item">
@@ -182,10 +215,16 @@
         {% endif %}
         <!-- 類型選項卡 -->
         <ul class="nav nav-tabs" id="productTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link {% if selected_type == 0 %}active{% endif %}"  
+                href="?q={{ request.GET.q }}&r={{ request.GET.r }}&page=1" 
+                role="tab">
+                    全部
+                </a>
+            </li>
             {% for product_type in all_types %}
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link {% if selected_type == product_type.id %}active{% endif %}" 
-                    id="tab-{{ product_type.id }}" 
+                    <a class="nav-link {% if  selected_type ==  product_type.id %}active{% endif %}" 
                     href="?type={{ product_type.id }}&q={{ request.GET.q }}&r={{ request.GET.r }}&page=1" 
                     role="tab">
                         {{ product_type.name }}
@@ -197,45 +236,33 @@
         <!-- 產品顯示 -->
         <div class="mt-4">
             {% if products %}
-                <table class="table table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th>序號</th>
-                            <th>條碼</th>
-                            <th>產品名稱</th>
-                            <th>圖片</th>
-                            <th>建立日期</th>
-                            <th>廠商</th>
-                            <th>剩餘數量</th>
-                            <th>選項</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for product in products %}
-                            <tr>
-                                <td>{{ product.serial_number }}</td>
-                                <td>{{ product.barcode }}</td>
-                                <td>{{ product.product_name }}</td>
-                                <td>
-                                    {% if product.images.all %}
-                                        <img src="{{ product.images.first.image.url }}" alt="{{ product.product_name }}" width="50px" height="50px">  <!-- 顯示第一張圖片 -->
-                                    {% else %}
-                                        <p>無圖片</p>
-                                    {% endif %}
-                                </td>
-                                <td>{{ product.arrival_date }}</td>
-                                <td>{{ product.supplier}}</td>
-                                <td>{{ product.quantity }}</td>
-                                <td>
-                                    <div class="action-buttons">
-                                        <a class="btn btn-warning btn_custom" href="{% url 'update_quantity' product.serial_number %}">更新數量</a>
-                                        <a href="{% url 'delete_product' product.serial_number %}" class='btn btn-danger btn_custom'>刪除</a>
-                                    </div>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div class="card-container">
+                {% for product in products %}
+                <div class="product-card">
+                    <div class="card-header">
+                        <h4>{{ product.product_name }}</h4>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>序號:</strong> {{ product.serial_number }}</p>
+                        <p><strong>條碼:</strong> {{ product.barcode }}</p>
+                        <div class="product-image">
+                            {% if product.images.all %}
+                            <img src="{{ product.images.first.image.url }}" alt="{{ product.product_name }}" width="100px" height="100px">
+                            {% else %}
+                            <p>無圖片</p>
+                            {% endif %}
+                        </div>
+                        <p><strong>建立日期:</strong> {{ product.arrival_date }}</p>
+                        <p><strong>廠商:</strong> {{ product.supplier }}</p>
+                        <p><strong>剩餘數量:</strong> {{ product.quantity }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <a class="btn btn-warning btn_custom" href="{% url 'update_quantity' product.serial_number %}">更新數量</a>
+                        <a href="{% url 'delete_product' product.serial_number %}" class='btn btn-danger btn_custom'>刪除</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
                 <!-- 分頁 -->
                 {% if is_paginated %}
                 <nav aria-label="Page navigation">
@@ -287,7 +314,7 @@
                 </nav>
                 {% endif %}
             {% else %}
-                <p>目前沒有符合條件的產品。</p>
+                <p>沒有符合條件的產品。</p>
             {% endif %}
         </div>
     </div>
