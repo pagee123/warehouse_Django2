@@ -1,6 +1,8 @@
+import os
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User  # 使用內建的User模型
+from django.conf import settings
 
 # Create your models here.
 
@@ -42,6 +44,11 @@ class Product(models.Model):
             return True
         else:
             return False  # 如果數量不足以取出，返回 False
+    def delete(self, *args, **kwargs):
+        # 刪除所有與該產品關聯的圖片
+        for image in self.images.all():
+            image.delete()  # 這將同時刪除文件
+        super().delete(*args, **kwargs)
         
 class ProductImage(models.Model):
     product = models.ForeignKey('Product', related_name='images', on_delete=models.CASCADE)  # 與 Product 關聯
@@ -49,6 +56,16 @@ class ProductImage(models.Model):
 
     def __str__(self):
         return f"Image for {self.product.product_name}"
+    
+    def delete(self, *args, **kwargs):
+        # 檢查文件是否存在
+        if self.image:
+            image_path = os.path.join(settings.MEDIA_ROOT, self.image.path)
+            # 刪除文件
+            if os.path.isfile(image_path):
+                os.remove(image_path)
+        # 刪除資料庫記錄
+        super().delete(*args, **kwargs)
 
 class ActivityLog(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -162,11 +162,17 @@ def add_product(request):
 
         if form.is_valid():
             product = form.save()  # 直接保存表單
+            
+            image = request.FILES.get('image')
+            
+            if image:
+                ProductImage.objects.create(product=product, image=image)
 
             # 創建操作記錄
             user = request.user
             action_description = f"成功建立 {product.product_name}，數量為 {product.quantity}。"
             ActivityLog.objects.create(user=user, action=action_description)
+            messages.success(request, f"成功建立 {product.product_name}，數量為 {product.quantity}。")
 
             return redirect('product_list')  # 新增成功後重定向到產品列表
     else:
@@ -191,6 +197,7 @@ def delete_product(request, product_id):
         action_description = (f"成功刪除{product.product_name}")
         # 創建並保存操作記錄
         ActivityLog.objects.create(user=user, action=action_description)
+        messages.success(request, f"成功刪除 {product.product_name}")
         product.delete()
         return redirect('product_list')  # 刪除成功後重定向到產品列表
 

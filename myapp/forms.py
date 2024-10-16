@@ -30,7 +30,8 @@ class SignUpForm(UserCreationForm):
     
     # 用於新增或更新貨品的表單
 class ProductForm(forms.ModelForm):
+    images = forms.ImageField(required=False)
     class Meta:
         model = Product
-        fields = ['serial_number','barcode','product_name', 'arrival_date', 'quantity','product_type','description','supplier']  # 表單顯示的欄位
+        fields = ['serial_number','barcode','product_name', 'arrival_date', 'quantity','product_type','description','supplier','images']  # 表單顯示的欄位
     
