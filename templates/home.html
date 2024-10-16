@@ -10,7 +10,10 @@
     <link rel="icon" href="{% static 'images/Box_ico.ico' %}" type="image/x-icon"/>
     <style>
         body {
-            background-color: #f8f9fa;
+            background-image: url("{% static 'images/boxes.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             font-family: 'Arial', sans-serif;
         }
         
@@ -24,10 +27,10 @@
         }
         .welcome-container {
             margin-top: 50px;
-            padding: 20px;
-            background-color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .header-title {
             text-align: center;
@@ -49,7 +52,8 @@
             color: #343a40;
         }
         .log-list {
-            margin-top: 20px;
+            max-width: 600px;
+            margin: 20px auto;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
@@ -139,11 +143,7 @@
         {% if user.is_authenticated %}
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <div class="card">
-                    <div class="card-body">
-                        <a href="{% url 'product_list' %}" class="btn btn-success btn-custom">查看產品列表</a>
-                    </div>
-                </div>
+                <a href="{% url 'product_list' %}" class="btn btn-success btn-custom">查看產品列表</a>
             </div>
         </div>
         {% endif %}
