@@ -9,8 +9,15 @@
     -修改nav-tabs不會active
     -修改productlist 呈現table->card
 
+-20241017
+    -productlist修改modal樣式
+    -移除update Template
+    -註冊密碼變寬鬆
+    -修改註冊頁面樣式
+    -增加尚未登入可以修改問題
+
+
 
 -Note:
     -新增barcode api
-    -更新產品列表為方塊顯示不是列表
-    -刪除update畫面，直接在產品列表有新增減少按鈕
+    -使用base.html當作主題

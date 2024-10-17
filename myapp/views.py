@@ -125,9 +125,8 @@ def update_quantity(request, product_id):
         user = request.user
         # 創建並保存操作記錄
         ActivityLog.objects.create(user=user, action=action_description)
-        return redirect('product_list')  # 重定向到產品列表頁面
-
-    return render(request, 'update_quantity.html', {'product': product})
+    
+    return redirect('product_list')  # 重定向到產品列表頁面
 
 def error_page(request):
     return render(request,'error.html',locals())
