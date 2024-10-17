@@ -257,11 +257,37 @@
                         <p><strong>剩餘數量:</strong> {{ product.quantity }}</p>
                     </div>
                     <div class="card-footer">
-                        <a class="btn btn-warning btn_custom" href="{% url 'update_quantity' product.serial_number %}">更新數量</a>
+                        <button type="button" class="btn btn-warning btn_custom" data-bs-toggle="modal" data-bs-target="#updateQuantityModal" data-product-id="{{ product.serial_number }}">更新數量</button>
+                        {% comment %} <a class="btn btn-warning btn_custom" href="{% url 'update_quantity' product.serial_number %}">更新數量</a> {% endcomment %}
                         <a href="{% url 'delete_product' product.serial_number %}" class='btn btn-danger btn_custom'>刪除</a>
                     </div>
                 </div>
                 {% endfor %}
+
+            <!-- Modal -->
+            <div class="modal fade" id="updateQuantityModal" tabindex="-1" aria-labelledby="updateQuantityModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="updateQuantityModalLabel">更新產品數量</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                    <!-- Form to update the quantity -->
+                    <form id="updateQuantityForm" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                        <label for="quantity" class="form-label">產品數量</label>
+                        <input type="number" class="form-control" id="quantity" name="amount" min="1" required>
+                        </div>
+                        <button class="btn btn-primary" type="submit" name="action" value="add">進貨數量</button>
+                        <button class="btn btn-warning" type="submit" name="action" value="remove">出貨數量</button>
+                    </form>
+                    </div>
+                </div>
+                </div>
+            </div>    
+
             </div>
                 <!-- 分頁 -->
                 {% if is_paginated %}
@@ -319,5 +345,22 @@
         </div>
     </div>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script>
+        // 當模態視窗顯示時觸發
+        let updateQuantityModal = document.getElementById('updateQuantityModal');
+        updateQuantityModal.addEventListener('show.bs.modal', function (event) {
+            // 取得觸發模態視窗的按鈕
+            let button = event.relatedTarget;
+            // 從按鈕的 data-product-id 屬性獲取 product ID
+            let productId = button.getAttribute('data-product-id');
+            // 選擇模態中的隱藏字段並設置其值
+            let productIdInput = updateQuantityModal.querySelector('#productId');
+            productIdInput.value = productId;
+
+            // 動態設置表單的 action 屬性
+            let form = updateQuantityModal.querySelector('#updateQuantityForm');
+            form.action = "";  // 根據你的 URL 路由
+        });
+    </script>
 </body>
 </html>

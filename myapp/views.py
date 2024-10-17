@@ -90,8 +90,9 @@ def product_list(request):
         product_type = 0
     product_type = int(product_type)
     
-    print(type(product_type))
-    print(int(product_type))
+    # print(type(product_type))
+    # print(int(product_type))
+    
     
     context = {
         'products': page_obj.object_list,
