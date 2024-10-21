@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="icon" href="{% static 'images/Box_ico.ico' %}" type="image/x-icon"/>
-    {% block title %}{% endblock title %}
     <style>
         body {
             background-image: url("{% static 'images/boxes.jpg' %}");
@@ -97,16 +96,57 @@
             color: #333;
             font-weight: bold;
         }
-        .btn-primary, .btn-secondary {
+        .login_button {
             width: 100%;
         }
         .alert {
             margin-top: 15px;
         }
+
     </style>
+    {% block title %}{% endblock title %}
 </head>
 <body>
+     <!-- 導航欄 -->
+     <nav class="navbar navbar-expand-lg navbar-custom nav-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static 'images/Box_ico.ico' %}" width="25px" height="25px">&nbsp;倉庫管理系統</a>
+    
+            <!-- Navbar Toggler -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+    
+            <!-- Navbar Links -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            {% if user.first_name or user.last_name %}
+                                <a class="nav-link">你好, {{ user.last_name }}{{ user.first_name }}!</a>
+                            {% else %}
+                                <a class="nav-link">你好, {{ user.username }}!</a>
+                            {% endif %}
+                        </li>
+                        <li class="nav-item">
+                            <form method="POST" action="{% url 'logout' %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">登出</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a href="{% url 'login' %}" class="btn btn-primary">登入</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
     {% block content %}{% endblock content%}
+    <footer>
+        <p style="text-align:center;">&copy; 2024 IOTA Sixth Team.</p>
+      </footer>
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <script src="https://kit.fontawesome.com/315581fd07.js" crossorigin="anonymous"></script> <!-- 添加 Font Awesome -->
 </body>

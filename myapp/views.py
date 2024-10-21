@@ -45,7 +45,8 @@ def home_view(request):
 
     user = request.user  # 獲取登入者資訊
     logs = ActivityLog.objects.order_by('-timestamp')[:10]  # 只顯示最近的10條記錄
-    return render(request, 'home.html', {'user': user,'logs': logs})
+    less_product = Product.objects.filter(quantity__lt=10)
+    return render(request, 'home.html', {'user': user,'logs': logs,'less_product':less_product})
 
 def random_digit_challenge():
     """自定義隨機生成數字的驗證碼"""

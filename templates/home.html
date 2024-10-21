@@ -4,46 +4,25 @@
     <title>倉庫管理系統 - 首頁</title>
 {% endblock title %}
 {% block content %}
-    <!-- 導航欄 -->
-    <nav class="navbar navbar-expand-lg navbar-custom nav-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static 'images/Box_ico.ico' %}" width="25px" height="25px">&nbsp;倉庫管理系統</a>
-    
-            <!-- Navbar Toggler -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-    
-            <!-- Navbar Links -->
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            {% if user.first_name or user.last_name %}
-                                <a class="nav-link">你好, {{ user.last_name }}{{ user.first_name }}!</a>
-                            {% else %}
-                                <a class="nav-link">你好, {{ user.username }}!</a>
-                            {% endif %}
-                        </li>
-                        <li class="nav-item">
-                            <form method="POST" action="{% url 'logout' %}" class="d-inline">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-danger">登出</button>
-                            </form>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a href="{% url 'login' %}" class="btn btn-primary">登入</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </nav>
+   
 
     <div class="container welcome-container">
         <h1 class="header-title">歡迎來到倉庫管理系統！</h1>
-    
+        <h2 class="record-title">即將缺貨品項</h2>
+        <div class="log-list">
+            <ul class="list-group">
+                {% for product in less_product %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fa fa-exclamation-triangle me-2"></i> <!-- 使用 Font Awesome 圖標 -->
+                            {{ product.product_name }} 即將缺貨，剩餘數量: {{ product.quantity }}
+                        </div>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item">目前沒有即將缺貨品項。</li>
+                {% endfor %}
+            </ul>
+        </div>
         <h2 class="record-title">操作記錄</h2>
         <div class="log-list">
             <ul class="list-group">
