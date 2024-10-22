@@ -43,6 +43,8 @@ urlpatterns = [
     path('api/users/<int:pk>/', UserDetailAPIView.as_view(), name='user_detail_api'),  # 單一使用者
     path('api/login/', login_user, name='login_user'),
     path('api/user/profile/', get_user_profile, name='user-profile'),
+    path('api/barcode/',views.barcode_search),
+    path('products/products_detail/<int:id>/',views.product_detail),
 
 
     

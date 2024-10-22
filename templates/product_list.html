@@ -207,7 +207,7 @@
                 {% for product in products %}
                 <div class="product-card">
                     <div class="card-header">
-                        <h4>{{ product.product_name }}</h4>
+                        <a href="/products_detail/{{product.serial_number}}/"><h4>{{ product.product_name }}</h4></a>
                     </div>
                     <div class="card-body">
                         <p><strong>序號:</strong> {{ product.serial_number }}</p>

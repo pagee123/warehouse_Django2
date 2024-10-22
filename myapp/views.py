@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect , get_object_or_404
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
 from django.contrib import messages
 from .forms import *
 import random
@@ -17,6 +17,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.decorators import login_required
 from django.forms.models import model_to_dict
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
@@ -103,6 +104,9 @@ def product_list(request):
         'selected_type': int(product_type)  # 當前選中的類型
     }
     return render(request, 'product_list.html', context)
+
+def product_detail(request,id=None):
+    return render(request,'products_detail.html',locals())
 
 def update_quantity(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
@@ -254,8 +258,22 @@ def login_user(request):
         return Response({'message': 'Login Failed'}, status=status.HTTP_401_UNAUTHORIZED)
     
 @api_view(['GET'])
-#@login_required  # 確保只有已登錄用戶可以訪問
+@login_required  # 確保只有已登錄用戶可以訪問
 def get_user_profile(request):
     user = request.user
+    # idget = request.GET['id']
+    # user = User.objects.filter(id = idget)
+    # userList = list(user.values())
+    # return JsonResponse(userList,safe=False)
     serializer = UserSerializer(user)
     return Response(serializer.data)
+
+@csrf_exempt
+def barcode_search(request):
+    if request.method == 'POST':
+        barcodecatch = request.POST['barcode']
+        data = Product.objects.filter( barcode = barcodecatch ) 
+        dataList = list(data.values())
+        return JsonResponse(dataList,safe=False)
+    else:
+        return HttpResponse("fails")

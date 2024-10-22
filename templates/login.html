@@ -1,4 +1,4 @@
-{% extends "base2.html" %}
+{% extends "base.html" %}
 {% block title %}
     <title>登入頁面</title>
     {% load static %}
@@ -7,14 +7,11 @@
     <style>
         body {
             background-image: url("{% static 'images/boxes.jpg' %}");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            font-family: 'Arial', sans-serif;
             height: 100vh;
             {% comment %} display: flex; {% endcomment %}
             justify-content: center;
             align-items: center;
+            flex-direction: column;
         }
     </style>
 {% endblock title %}
