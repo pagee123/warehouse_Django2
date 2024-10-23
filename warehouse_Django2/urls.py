@@ -44,7 +44,7 @@ urlpatterns = [
     path('api/login/', login_user, name='login_user'),
     path('api/user/profile/', get_user_profile, name='user-profile'),
     path('api/barcode/',views.barcode_search),
-    path('products/products_detail/<int:id>/',views.product_detail),
+    path('products_detail/<int:id>/',views.products_detail),
 
 
     

@@ -105,7 +105,9 @@ def product_list(request):
     }
     return render(request, 'product_list.html', context)
 
-def product_detail(request,id=None):
+def products_detail(request,id=None):
+    product = Product.objects.get(serial_number = id)
+    print(model_to_dict(product))
     return render(request,'products_detail.html',locals())
 
 def update_quantity(request, product_id):
